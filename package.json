@@ -4,16 +4,43 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon --legacy-watch ./src/index.js",
+    "test": "jest --watchAll --maxWorkers=1 --verbose"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/MauriceAndre/docthrive-api.git"
   },
-  "author": "",
+  "author": "Maurice Schmid",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/MauriceAndre/docthrive-api/issues"
   },
-  "homepage": "https://github.com/MauriceAndre/docthrive-api#readme"
+  "homepage": "https://github.com/MauriceAndre/docthrive-api#readme",
+  "dependencies": {
+    "@hapi/joi": "^17.1.1",
+    "config": "^3.3.1",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-async-errors": "^3.1.1",
+    "helmet": "^3.22.0",
+    "joi-objectid": "^3.0.1",
+    "lodash": "^4.17.15",
+    "mongoose": "^5.9.15",
+    "winston": "^3.2.1",
+    "winston-mongodb": "^5.0.1"
+  },
+  "devDependencies": {
+    "@types/jest": "^25.2.3",
+    "jest": "^26.0.1",
+    "nodemon": "^2.0.4",
+    "supertest": "^4.0.2"
+  },
+  "jest": {
+    "coveragePathIgnorePatterns": [
+      "tests/tools",
+      "tests/integration/test_snippets"
+    ]
+  }
 }
