@@ -27,6 +27,7 @@
     "helmet": "^3.22.0",
     "joi-objectid": "^3.0.1",
     "lodash": "^4.17.15",
+    "memoizee": "^0.4.14",
     "mongoose": "^5.9.15",
     "winston": "^3.2.1",
     "winston-mongodb": "^5.0.1"

@@ -43,6 +43,7 @@ const init = function () {
     throw ex;
   });
 };
+init();
 
 module.exports = {
   init,

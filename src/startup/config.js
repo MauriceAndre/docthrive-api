@@ -5,8 +5,12 @@ const Joi = require("@hapi/joi");
 Joi.objectId = require("joi-objectid")(Joi);
 
 module.exports = function () {
-  if (process.env.NODE_ENV !== "production") require("dotenv").config();
+  const env = process.env.NODE_ENV;
 
+  if (env !== "production") {
+    const file = env ? `${env}.env` : "default.env";
+    require("dotenv").config({ path: `./.env/${file}` });
+  }
   const missingEnv = _.difference(config.get("env"), Object.keys(process.env));
 
   if (!!missingEnv.length)

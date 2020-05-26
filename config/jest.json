@@ -1,0 +1,6 @@
+{
+  "db": {
+    "main": "docthrive_test",
+    "userPrefix": "user_test_"
+  }
+}
