@@ -26,7 +26,6 @@ const getMainDb = function () {
 };
 
 const getUserDb = function (id) {
-  logger.error(config.get("db.userPrefix"));
   const dbName = `${config.get("db.userPrefix")}${id}`;
   const userUrl = getDBUrl(dbName);
 

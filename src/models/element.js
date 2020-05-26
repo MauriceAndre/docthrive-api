@@ -17,10 +17,10 @@ const elementSchema = new mongoose.Schema({
   updatedAt: { type: Date },
 });
 
-elementSchema.pre("save", function (next) {
+elementSchema.pre(["update", "updateOne", "save"], function (next) {
   const updatedAt = Date.now();
   this.set({ updatedAt });
-  +next();
+  next();
 });
 
 const getElement = async function (id) {

@@ -1,5 +1,6 @@
 // external packages
 const request = require("supertest");
+const mongoose = require("mongoose");
 // models
 const { getElement } = require("../../../models/element");
 // tools
@@ -140,6 +141,116 @@ describe("/api/elements", () => {
         expect(res.body.length).toBe(1);
         expect(res.body[0].parentId).toBe(query.parentId);
       });
+    });
+  });
+
+  describe("PUT /:id", () => {
+    let url, id, name, element;
+
+    beforeEach(async () => {
+      url = "/api/elements";
+      element = await elementUtils.db.addElement();
+
+      id = element.id;
+      name = "New updated name";
+    });
+
+    const exec = async (args = {}) => {
+      id = args.id || id;
+      url = `${url}/${id}`;
+
+      return await request(server).put(url).send({ name });
+    };
+
+    it("should return 404 if id is invalid", async () => {
+      id = "1";
+      const res = await exec();
+
+      expect(res.status).toBe(404);
+    });
+
+    it("should return 404 if element with the given id wasn't found", async () => {
+      id = mongoose.Types.ObjectId();
+      const res = await exec();
+
+      expect(res.status).toBe(404);
+    });
+
+    it("should update the element if request is valid", async () => {
+      const res = await exec();
+
+      expect(res.status).toBe(200);
+    });
+
+    it("should update the element in db", async () => {
+      await exec();
+
+      element = await Element.findById(id);
+
+      expect(element).not.toBeNull();
+      expect(element).toHaveProperty("name", name);
+    });
+
+    it("should return the updated element if request is valid", async () => {
+      const res = await exec();
+
+      expect(res.body).toHaveProperty("_id", element.id);
+      expect(res.body).toHaveProperty("name", name);
+    });
+
+    // TODO: should only update allowed keys && validate body
+  });
+
+  describe("DELETE /:id", () => {
+    let url, id, element;
+
+    beforeEach(async () => {
+      url = "/api/elements";
+      element = await elementUtils.db.addElement();
+
+      id = element.id;
+    });
+
+    const exec = (args = {}) => {
+      id = args.id || id;
+      url = `${url}/${id}`;
+
+      return request(server).delete(url);
+    };
+
+    it("should return 404 if id is invalid", async () => {
+      id = "1";
+      const res = await exec();
+
+      expect(res.status).toBe(404);
+    });
+
+    it("should return 400 if id wasn't found", async () => {
+      id = mongoose.Types.ObjectId();
+      const res = await exec();
+
+      expect(res.status).toBe(404);
+    });
+
+    it("should return 200 if request is valid", async () => {
+      const res = await exec();
+
+      expect(res.status).toBe(200);
+    });
+
+    it("should remove the element in db if request is valid", async () => {
+      await exec();
+
+      const elementInDb = await Element.findById(id);
+
+      expect(elementInDb).toBeNull();
+    });
+
+    it("shoud return the removed element", async () => {
+      const res = await exec();
+
+      expect(res.body).toHaveProperty("_id", element.id);
+      expect(res.body).toHaveProperty("name", element.name);
     });
   });
 });

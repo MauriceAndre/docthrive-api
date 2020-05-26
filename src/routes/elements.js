@@ -3,6 +3,7 @@ const express = require("express");
 const _ = require("lodash");
 // middleware
 const validator = require("../middleware/validator");
+const validateObjectId = require("../middleware/validateObjectId");
 // models
 const { validate, getElement } = require("../models/element");
 
@@ -29,6 +30,24 @@ router.post("/", [validator(validate)], async (req, res) => {
   );
 });
 
+// update element
+router.put("/:id", [validateObjectId], async (req, res) => {
+  const Element = await getElement(req.user._id);
+  const id = req.params.id;
+
+  let element = await Element.findById(id);
+  if (!element)
+    return res
+      .status(404)
+      .send("The given element id wasn't found. Please check the id.");
+
+  await element.updateOne(req.body);
+  element = await Element.findById(id);
+
+  res.send(element);
+});
+
+// return elements
 router.get("/", [], async (req, res) => {
   const Element = await getElement(req.user._id);
 
@@ -38,6 +57,19 @@ router.get("/", [], async (req, res) => {
   const elements = await Element.find(filter).select("-__v");
 
   res.send(elements);
+});
+
+// remove element
+router.delete("/:id", [validateObjectId], async (req, res) => {
+  const Element = await getElement(req.user._id);
+
+  const element = await Element.findByIdAndRemove(req.params.id);
+  if (!element)
+    return res
+      .status(404)
+      .send("The given element id wasn't found. Please check the id.");
+
+  res.send(element);
 });
 
 module.exports = router;
