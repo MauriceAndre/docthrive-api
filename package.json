@@ -7,6 +7,9 @@
     "start": "node ./src/index.js",
     "test": "jest --watchAll --maxWorkers=1 --verbose"
   },
+  "engines": {
+    "node": "12.13.0"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/MauriceAndre/docthrive-api.git"

@@ -11,7 +11,7 @@ require("./startup/logging")();
 require("./startup/db")();
 require("./startup/routes")(app);
 
-const port = process.env.APP_PORT;
+const port = process.env.PORT;
 const server = app.listen(port, () =>
   logger.info(`Server is listening on port ${port}...`)
 );
