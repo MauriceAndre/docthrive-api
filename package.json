@@ -2,7 +2,7 @@
   "name": "docthrive-api",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./src/index.js",
   "scripts": {
     "start": "node ./src/index.js",
     "test": "jest --watchAll --maxWorkers=1 --verbose"
