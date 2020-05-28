@@ -42,8 +42,6 @@ const update = async function (id, user, data) {
   // only update when element changed
   if (isMatch(element, data)) return element;
 
-  console.log("exec update", true);
-
   await element.updateOne(data);
   element = await Element.findById(id);
 
