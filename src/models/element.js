@@ -48,11 +48,9 @@ const update = async function (id, user, data) {
   return element;
 };
 
-const cropRequest = function (element) {
-  return _.pick(element, ["name", "type", "parentId", "labels"]);
-};
+const reqKeys = ["name", "type", "parentId", "labels"];
 
-const cropResKeys = [
+const resKeys = [
   "_id",
   "name",
   "type",
@@ -62,7 +60,7 @@ const cropResKeys = [
   "updatedAt",
 ];
 const cropResponse = function (element) {
-  return _.pick(element, cropResKeys);
+  return _.pick(element, resKeys);
 };
 
 function validate(element) {
@@ -80,7 +78,7 @@ module.exports = {
   validate,
   getElement,
   update,
-  cropRequest,
   cropResponse,
-  cropResKeys,
+  reqKeys,
+  resKeys,
 };

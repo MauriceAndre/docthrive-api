@@ -145,7 +145,7 @@ describe("/api/elements", () => {
   });
 
   describe("PUT /:id", () => {
-    let url, id, name, element;
+    let url, id, name, element, props;
 
     beforeEach(async () => {
       url = "/api/elements";
@@ -153,13 +153,16 @@ describe("/api/elements", () => {
 
       id = element.id;
       name = "New updated name";
+      props = null;
     });
 
     const exec = async (args = {}) => {
+      props = args.props || props || { name };
+      const data = args.data || { ...element, ...props };
       id = args.id || id;
       url = `${url}/${id}`;
 
-      return await request(server).put(url).send({ name });
+      return await request(server).put(url).send(data);
     };
 
     it("should return 404 if id is invalid", async () => {
@@ -182,13 +185,22 @@ describe("/api/elements", () => {
       expect(res.status).toBe(200);
     });
 
+    it("should only update element if values changed", async () => {
+      props = {};
+      const res = await exec();
+
+      expect(res.status).toBe(200);
+      expect(res.body).toHaveProperty("updatedAt", element.updatedAt.toJSON());
+    });
+
     it("should update the element in db", async () => {
       await exec();
 
-      element = await Element.findById(id);
+      const elementDb = await Element.findById(id);
 
-      expect(element).not.toBeNull();
-      expect(element).toHaveProperty("name", name);
+      expect(elementDb).not.toBeNull();
+      expect(elementDb).toHaveProperty("name", name);
+      expect(elementDb.updatedAt).not.toBe(element.updatedAt);
     });
 
     it("should return the updated element if request is valid", async () => {
@@ -196,6 +208,7 @@ describe("/api/elements", () => {
 
       expect(res.body).toHaveProperty("_id", element.id);
       expect(res.body).toHaveProperty("name", name);
+      expect(res.body.updatedAt).not.toBe(element.updatedAt.toJSON());
     });
 
     // TODO: should only update allowed keys && validate body

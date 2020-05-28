@@ -4,32 +4,31 @@ const _ = require("lodash");
 // middleware
 const validator = require("../middleware/validator");
 const validateObjectId = require("../middleware/validateObjectId");
+const cropBody = require("../middleware/cropBody");
 // models
 const {
   validate,
   getElement,
   update,
-  cropRequest,
   cropResponse,
-  cropResKeys,
+  reqKeys,
+  resKeys,
 } = require("../models/element");
 
 const router = express.Router();
 
 // add new element
-router.post("/", [validator(validate)], async (req, res) => {
+router.post("/", [validator(validate), cropBody(reqKeys)], async (req, res) => {
   const Element = await getElement(req.user._id);
-  const element = new Element(cropRequest(req.body));
+  const element = new Element(req.body);
   await element.save();
 
   res.send(cropResponse(element));
 });
 
 // update element
-router.put("/:id", [validateObjectId], async (req, res) => {
-  const id = req.params.id;
-
-  let element = await update(id, req.user, req.body);
+router.put("/:id", [validateObjectId, cropBody(reqKeys)], async (req, res) => {
+  const element = await update(req.params.id, req.user, req.body);
   if (!element)
     return res
       .status(404)
@@ -45,7 +44,7 @@ router.get("/", [], async (req, res) => {
   let filter = req.query || {};
   filter = _.pick(filter, ["_id", "name", "type", "parentId", "labels"]);
 
-  const elements = await Element.find(filter).select(cropResKeys.join(" "));
+  const elements = await Element.find(filter).select(resKeys.join(" "));
 
   res.send(elements);
 });
