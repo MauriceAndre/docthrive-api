@@ -5,6 +5,7 @@
   "main": "./src/index.js",
   "scripts": {
     "start": "node ./src/index.js",
+    "dev": "nodemon --legacy-watch ./src/index.js",
     "test": "jest --watchAll --maxWorkers=1 --verbose"
   },
   "engines": {
