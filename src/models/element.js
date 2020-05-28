@@ -1,10 +1,13 @@
 // external modules
 const mongoose = require("mongoose");
-const { user } = require("../db/connection");
+const _ = require("lodash");
 const Joi = require("@hapi/joi");
 const config = require("config").get("models.element");
+// db
+const { user } = require("../db/connection");
 // utils
 const { applyOptions } = require("../utils/validateUtils");
+const { isMatch } = require("../utils/objectUtils");
 
 const { name, type, parentId } = config.validate;
 
@@ -30,6 +33,40 @@ const getElement = async function (id) {
   return Element;
 };
 
+const update = async function (id, user, data) {
+  const Element = await getElement(user._id);
+
+  let element = await Element.findById(id);
+  if (!element) return null;
+
+  // only update when element changed
+  if (isMatch(element, data)) return element;
+
+  console.log("exec update", true);
+
+  await element.updateOne(data);
+  element = await Element.findById(id);
+
+  return element;
+};
+
+const cropRequest = function (element) {
+  return _.pick(element, ["name", "type", "parentId", "labels"]);
+};
+
+const cropResKeys = [
+  "_id",
+  "name",
+  "type",
+  "parentId",
+  "labels",
+  "createdAt",
+  "updatedAt",
+];
+const cropResponse = function (element) {
+  return _.pick(element, cropResKeys);
+};
+
 function validate(element) {
   const schema = Joi.object({
     name: applyOptions(Joi.string(), name),
@@ -44,4 +81,8 @@ function validate(element) {
 module.exports = {
   validate,
   getElement,
+  update,
+  cropRequest,
+  cropResponse,
+  cropResKeys,
 };
