@@ -11,6 +11,7 @@ const {
   getElement,
   update,
   cropResponse,
+  filterKeys,
   reqKeys,
   resKeys,
 } = require("../models/element");
@@ -42,7 +43,7 @@ router.get("/", [], async (req, res) => {
   const Element = await getElement(req.user._id);
 
   let filter = req.query || {};
-  filter = _.pick(filter, ["_id", "name", "type", "parentId", "labels"]);
+  filter = _.pick(filter, filterKeys);
 
   const elements = await Element.find(filter).select(resKeys.join(" "));
 

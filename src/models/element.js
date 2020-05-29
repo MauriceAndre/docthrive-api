@@ -16,6 +16,8 @@ const elementSchema = new mongoose.Schema({
   type: { type: Number, ...type }, // TODO: type = mongoose.Schema.ObjectId
   parentId: { type: String, ...parentId },
   labels: { type: Array }, // TODO: label = mongoose.Schema.ObjectId
+  deleted: { type: Boolean, default: false },
+  deletedAt: { type: Date },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date },
 });
@@ -42,20 +44,25 @@ const update = async function (id, user, data) {
   // only update when element changed
   if (isMatch(element, data)) return element;
 
+  if (data.deleted && data.deleted !== element.deleted)
+    data.deletedAt = Date.now();
+
   await element.updateOne(data);
   element = await Element.findById(id);
 
   return element;
 };
 
-const reqKeys = ["name", "type", "parentId", "labels"];
-
+const filterKeys = ["_id", "name", "type", "parentId", "labels", "deleted"];
+const reqKeys = ["name", "type", "parentId", "labels", "deleted"];
 const resKeys = [
   "_id",
   "name",
   "type",
   "parentId",
   "labels",
+  "deleted",
+  "deletedAt",
   "createdAt",
   "updatedAt",
 ];
@@ -69,6 +76,7 @@ function validate(element) {
     type: applyOptions(Joi.number(), type),
     parentId: applyOptions(Joi.string(), parentId),
     labels: Joi.array().items(Joi.string()),
+    deleted: Joi.bool(),
   });
 
   return schema.validate(element);
@@ -79,6 +87,7 @@ module.exports = {
   getElement,
   update,
   cropResponse,
+  filterKeys,
   reqKeys,
   resKeys,
 };
