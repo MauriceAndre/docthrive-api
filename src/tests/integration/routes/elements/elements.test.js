@@ -3,13 +3,14 @@ const { getElement } = require("../../../../models/element");
 // tools
 const elementUtils = require("../../../tools/elementUtils");
 
+require("../../../tools/init");
+
 describe("/api/elements", () => {
   jest.setTimeout(30000);
 
   const props = {};
 
   beforeEach(async () => {
-    require("../../../tools/init");
     props.server = require("../../../../index");
     props.Element = await getElement("userId");
   });

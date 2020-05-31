@@ -7,6 +7,7 @@ const error = require("../middleware/error");
 const manipulate = require("../middleware/manipulate");
 // routes
 const elements = require("../routes/elements");
+const users = require("../routes/users");
 
 module.exports = function (app) {
   // middleware
@@ -17,6 +18,7 @@ module.exports = function (app) {
 
   // routes
   app.use("/api/elements", elements);
+  app.use("/api/users", users);
 
   // catch error
   app.use(error);
