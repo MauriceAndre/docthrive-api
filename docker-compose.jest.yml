@@ -1,7 +1,7 @@
 version: "3"
 services:
   app:
-    container_name: docthrive
+    container_name: docthrive-jest
     restart: always
     build: .
     ports:
@@ -15,8 +15,10 @@ services:
     links:
       - mongo
   mongo:
-    container_name: mongo
+    container_name: mongo-jest
     image: mongo
     command: mongod --port 27018
+    logging:
+      driver: "none"
     ports:
       - "27018:27018"

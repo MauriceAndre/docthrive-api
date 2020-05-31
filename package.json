@@ -6,7 +6,9 @@
   "scripts": {
     "start": "node ./src/index.js",
     "dev": "nodemon --legacy-watch ./src/index.js",
-    "test": "jest --watchAll --maxWorkers=1 --verbose"
+    "test": "jest --watchAll --maxWorkers=1 --verbose",
+    "docker-jest": "docker-compose -f docker-compose.jest.yml up",
+    "docker-dev": "docker-compose -f docker-compose.dev.yml up"
   },
   "engines": {
     "node": "12.13.0"
@@ -23,6 +25,7 @@
   "homepage": "https://github.com/MauriceAndre/docthrive-api#readme",
   "dependencies": {
     "@hapi/joi": "^17.1.1",
+    "bcrypt": "^4.0.1",
     "config": "^3.3.1",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
@@ -30,6 +33,7 @@
     "express-async-errors": "^3.1.1",
     "helmet": "^3.22.0",
     "joi-objectid": "^3.0.1",
+    "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.15",
     "memoizee": "^0.4.14",
     "mongoose": "^5.9.15",

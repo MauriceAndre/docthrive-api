@@ -1,0 +1,22 @@
+version: "3"
+services:
+  app:
+    container_name: docthrive-dev
+    restart: always
+    build: .
+    ports:
+      - "3005:3005"
+    command: bash -c "npm install && npm dev"
+    volumes:
+      - ./:/usr/src/app
+      - /usr/src/app/node_modules
+    environment:
+      - NODE_ENV=development
+    links:
+      - mongo
+  mongo:
+    container_name: mongo-dev
+    image: mongo
+    command: mongod --port 27017
+    ports:
+      - "27017:27017"
