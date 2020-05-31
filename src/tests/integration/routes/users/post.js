@@ -2,7 +2,6 @@
 const request = require("supertest");
 // tools
 const helper = require("../../../tools/testing-helper");
-// models
 
 module.exports = (props) => {
   describe("POST /", () => {
