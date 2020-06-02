@@ -57,6 +57,8 @@ const cropResponse = function (user) {
   return _.pick(user, resKeys);
 };
 
+const authKeys = ["email", "password"];
+
 function validate(user) {
   const schema = Joi.object({
     firstName: applyOptions(Joi.string(), firstName),
@@ -72,5 +74,6 @@ module.exports = {
   User,
   validate,
   reqKeys,
+  authKeys,
   cropResponse,
 };

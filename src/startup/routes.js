@@ -8,6 +8,7 @@ const manipulate = require("../middleware/manipulate");
 // routes
 const elements = require("../routes/elements");
 const users = require("../routes/users");
+const auth = require("../routes/auth");
 
 module.exports = function (app) {
   // middleware
@@ -19,6 +20,7 @@ module.exports = function (app) {
   // routes
   app.use("/api/elements", elements);
   app.use("/api/users", users);
+  app.use("/api/auth", auth);
 
   // catch error
   app.use(error);
