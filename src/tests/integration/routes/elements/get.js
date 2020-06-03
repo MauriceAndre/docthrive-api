@@ -5,19 +5,29 @@ const elementUtils = require("../../../tools/elementUtils");
 
 module.exports = (props) => {
   describe("GET", () => {
-    let url, query;
+    let url, query, token;
 
     const exec = (args = {}) => {
-      return request(props.server).get(url).query(query);
+      token = args.token !== undefined ? args.token : token;
+
+      return request(props.server)
+        .get(url)
+        .set("x-auth-token", token)
+        .query(query);
     };
 
     describe("/", () => {
       beforeEach(() => {
+        token = require("../../../tools/userUtils").generateDefaultToken();
+
         url = "/api/elements";
         query = {};
       });
 
       // TODO: should return only a limited of elements and not all
+
+      // authorization test
+      require("../../test_snippets/auth")(exec);
 
       it("should return elements if request is valid", async () => {
         await elementUtils.db.addManyElements(2);

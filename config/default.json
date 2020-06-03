@@ -1,5 +1,6 @@
 {
   "env": ["PORT", "DB_URL", "PASSWORD_SALT", "JWT_PRIVATE_KEY"],
+  "requiresAuth": true,
   "db": {
     "main": "docthrive",
     "userPrefix": "user_"

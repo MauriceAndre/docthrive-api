@@ -6,9 +6,10 @@ const elementUtils = require("../../../tools/elementUtils");
 
 module.exports = (props) => {
   describe("DELETE /:id", () => {
-    let url, id, element;
+    let url, id, element, token;
 
     beforeEach(async () => {
+      token = require("../../../tools/userUtils").generateDefaultToken();
       url = "/api/elements";
       element = await elementUtils.db.addElement();
 
@@ -16,11 +17,18 @@ module.exports = (props) => {
     });
 
     const exec = (args = {}) => {
+      token = args.token !== undefined ? args.token : token;
       id = args.id || id;
       url = `${url}/${id}`;
 
-      return request(props.server).delete(url);
+      return request(props.server)
+        .delete(url)
+        .set("x-auth-token", token)
+        .send();
     };
+
+    // authorization test
+    require("../../test_snippets/auth")(exec);
 
     it("should return 404 if id is invalid", async () => {
       id = "1";

@@ -6,9 +6,10 @@ const elementUtils = require("../../../tools/elementUtils");
 
 module.exports = (props) => {
   describe("PUT /:id", () => {
-    let url, id, name, element;
+    let url, id, name, element, token;
 
     beforeEach(async () => {
+      token = require("../../../tools/userUtils").generateDefaultToken();
       url = "/api/elements";
       element = await elementUtils.db.addElement();
 
@@ -18,13 +19,20 @@ module.exports = (props) => {
     });
 
     const exec = async (args = {}) => {
+      token = args.token !== undefined ? args.token : token;
       data = args.data || data || { name };
       const body = args.body || { ...element, ...data };
       id = args.id || id;
       url = `${url}/${id}`;
 
-      return await request(props.server).put(url).send(body);
+      return await request(props.server)
+        .put(url)
+        .set("x-auth-token", token)
+        .send(body);
     };
+
+    // authorization test
+    require("../../test_snippets/auth")(exec);
 
     it("should return 404 if id is invalid", async () => {
       id = "1";

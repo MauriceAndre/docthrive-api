@@ -38,10 +38,18 @@ userSchema.methods.comparePassword = function (password) {
   return bcrypt.compare(password, this.password);
 };
 
-userSchema.methods.generateWebToken = function () {
-  const payload = _.pick(this, ["_id", "firstName", "lastName", "isAdmin"]);
+const generateWebToken = function (user) {
+  const payload = _.pick(user, ["_id", "firstName", "lastName", "isAdmin"]);
 
   return jwt.sign(payload, process.env.JWT_PRIVATE_KEY);
+};
+
+userSchema.methods.generateWebToken = function () {
+  return generateWebToken(this);
+};
+
+userSchema.statics.generateJWT = function (user) {
+  return generateWebToken(user);
 };
 
 userSchema.statics.verifyWebToken = function (token) {

@@ -5,7 +5,7 @@ const helper = require("../../../tools/testing-helper");
 
 module.exports = (props) =>
   describe("POST /", () => {
-    let element;
+    let element, token;
 
     const initElement = () => {
       element = {
@@ -16,18 +16,28 @@ module.exports = (props) =>
       };
     };
 
-    beforeEach(initElement);
+    beforeEach(() => {
+      token = require("../../../tools/userUtils").generateDefaultToken();
 
-    const exec = (exec = {}) => {
-      let { body } = exec;
+      initElement();
+    });
+
+    const exec = (args = {}) => {
+      token = args.token !== undefined ? args.token : token;
       const url = "/api/elements";
 
-      body = body || element;
+      let body = args.body || element;
 
-      return request(props.server).post(url).send(body);
+      return request(props.server)
+        .post(url)
+        .set("x-auth-token", token)
+        .send(body);
     };
 
     // TODO:  should return 404 if type doesn't exist
+
+    // authorization test
+    require("../../test_snippets/auth")(exec);
 
     it("should return 400 if request is invalid", async () => {
       element = {};

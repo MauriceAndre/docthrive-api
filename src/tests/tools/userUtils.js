@@ -33,10 +33,12 @@ const Utils = {
     },
   },
   generateAdminToken: function () {
-    return new User({ isAdmin: true }).generateWebToken();
+    const user = { _id: "userId", isAdmin: true };
+    return User.generateJWT(user);
   },
   generateDefaultToken: function () {
-    return new User({ isAdmin: false }).generateWebToken();
+    const user = { _id: "userId", isAdmin: false };
+    return User.generateJWT(user);
   },
 };
 
