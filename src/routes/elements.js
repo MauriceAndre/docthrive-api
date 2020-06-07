@@ -6,6 +6,7 @@ const auth = require("../middleware/auth");
 const validator = require("../middleware/validator");
 const validateObjectId = require("../middleware/validateObjectId");
 const cropBody = require("../middleware/cropBody");
+const cropQuery = require("../middleware/cropQuery");
 // models
 const {
   validate,
@@ -48,13 +49,10 @@ router.put(
 );
 
 // return elements
-router.get("/", [auth], async (req, res) => {
+router.get("/", [auth, cropQuery(filterKeys)], async (req, res) => {
   const Element = await getElement(req.user._id);
 
-  let filter = req.query || {};
-  filter = _.pick(filter, filterKeys);
-
-  const elements = await Element.find(filter).select(resKeys.join(" "));
+  const elements = await Element.find(req.query).select(resKeys.join(" "));
 
   res.send(elements);
 });

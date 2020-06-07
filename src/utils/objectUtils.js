@@ -8,6 +8,11 @@ function isMatch(obj, srcObj) {
   });
 }
 
+function cropFunc(keys) {
+  return (obj) => _.pick(obj, keys);
+}
+
 module.exports = {
   isMatch,
+  cropFunc,
 };

@@ -7,7 +7,7 @@ const config = require("config").get("models.element");
 const { user } = require("../db/connection");
 // utils
 const { applyOptions } = require("../utils/validateUtils");
-const { isMatch } = require("../utils/objectUtils");
+const { isMatch, cropFunc } = require("../utils/objectUtils");
 
 const { name, type, parentId } = config.validate;
 
@@ -66,9 +66,6 @@ const resKeys = [
   "createdAt",
   "updatedAt",
 ];
-const cropResponse = function (element) {
-  return _.pick(element, resKeys);
-};
 
 function validate(element) {
   const schema = Joi.object({
@@ -86,7 +83,7 @@ module.exports = {
   validate,
   getElement,
   update,
-  cropResponse,
+  cropResponse: cropFunc(resKeys),
   filterKeys,
   reqKeys,
   resKeys,
