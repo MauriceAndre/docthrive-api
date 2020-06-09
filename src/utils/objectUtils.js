@@ -8,6 +8,22 @@ function isMatch(obj, srcObj) {
   });
 }
 
+function diff(firstObj, secondObj) {
+  const missingKeys = _.xor(_.keys(firstObj), _.keys(secondObj));
+  firstObj = _.omit(firstObj, missingKeys);
+  secondObj = _.omit(secondObj, missingKeys);
+
+  const diffArr = [];
+
+  for (const key in firstObj) {
+    if (_.isEqual(firstObj[key], secondObj[key])) continue;
+
+    diffArr.push(key);
+  }
+
+  return [...diffArr, ...missingKeys];
+}
+
 function cropFunc(keys) {
   return (obj) => _.pick(obj, keys);
 }
@@ -15,4 +31,5 @@ function cropFunc(keys) {
 module.exports = {
   isMatch,
   cropFunc,
+  diff,
 };

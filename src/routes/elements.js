@@ -17,6 +17,7 @@ const {
   reqKeys,
   resKeys,
 } = require("../models/element");
+const { detectActivity, getActivity } = require("../models/elementActivity");
 
 const router = express.Router();
 
@@ -28,6 +29,8 @@ router.post(
     const Element = await getElement(req.user._id);
     const element = new Element(req.body);
     await element.save();
+
+    await detectActivity(req.user._id, null, element);
 
     res.send(cropResponse(element));
   }

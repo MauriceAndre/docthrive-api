@@ -8,6 +8,8 @@ const { user } = require("../db/connection");
 // utils
 const { applyOptions } = require("../utils/validateUtils");
 const { isMatch, cropFunc } = require("../utils/objectUtils");
+// models
+const { detectActivity } = require("./elementActivity");
 
 const { name, type, parentId } = config.validate;
 
@@ -38,19 +40,21 @@ const getElement = async function (id) {
 const update = async function (id, user, data) {
   const Element = await getElement(user._id);
 
-  let element = await Element.findById(id);
-  if (!element) return null;
+  let oldElement = await Element.findById(id);
+  if (!oldElement) return null;
 
   // only update when element changed
-  if (isMatch(element, data)) return element;
+  if (isMatch(oldElement, data)) return oldElement;
 
-  if (data.deleted && data.deleted !== element.deleted)
+  if (data.deleted && data.deleted !== oldElement.deleted)
     data.deletedAt = Date.now();
 
-  await element.updateOne(data);
-  element = await Element.findById(id);
+  await oldElement.updateOne(data);
+  const newElement = await Element.findById(id);
 
-  return element;
+  await detectActivity(user._id, oldElement, newElement);
+
+  return newElement;
 };
 
 const filterKeys = ["_id", "name", "type", "parentId", "labels", "deleted"];
