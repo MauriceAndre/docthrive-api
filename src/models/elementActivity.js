@@ -9,8 +9,9 @@ const { cropFunc, diff } = require("../utils/objectUtils");
 const activitySchema = new mongoose.Schema({
   elementId: { type: mongoose.Types.ObjectId, required: true },
   action: {
-    name: String,
-    params: Object,
+    name: { type: String, required: true },
+    before: Object,
+    after: Object,
   },
   createdAt: { type: Date, default: Date.now, required: true },
 });
@@ -50,10 +51,8 @@ const getAction = function (oldState, newState) {
   if (name) {
     return {
       name,
-      params: {
-        before: oldState,
-        after: newState,
-      },
+      before: oldState,
+      after: newState,
     };
   }
 
@@ -93,7 +92,7 @@ const Types = {
   DELETE: "DELETE",
 };
 const resKeys = ["_id", "elementId", "action", "createdAt"];
-const filterKeys = ["elementId", "action", "createdAt"];
+const filterKeys = ["elementId", "action.name", "createdAt"];
 
 module.exports = {
   getActivity,
