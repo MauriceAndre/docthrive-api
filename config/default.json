@@ -23,7 +23,7 @@
         "subject": "Confirmation of Registration",
         "template": "users/register",
         "context": {
-          "url": "http://www.docthrive-web-app.herokuapp.com"
+          "url": "http://docthrive-web-app.herokuapp.com"
         }
       }
     }
