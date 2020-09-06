@@ -1,1 +1,14 @@
-{}
+{
+  "db": {
+    "main": "docthrive_test",
+    "userPrefix": "user_test_"
+  },
+  "testMail": {
+    "user": "web26946895p5",
+    "password": "VetngqV3",
+    "host": "alfa3215.alfahosting-server.de",
+    "port": 993,
+    "tls": true,
+    "authTimeout": 5000
+  }
+}

@@ -1,6 +1,33 @@
 {
-  "env": ["PORT", "DB_URL", "PASSWORD_SALT", "JWT_PRIVATE_KEY"],
+  "env": [
+    "PORT",
+    "DB_URL",
+    "PASSWORD_SALT",
+    "JWT_PRIVATE_KEY",
+    "MAIL_USER",
+    "MAIL_PASSWORD"
+  ],
   "requiresAuth": true,
+  "mail": {
+    "server": {
+      "host": "alfa3215.alfahosting-server.de",
+      "port": 465,
+      "secure": true
+    },
+    "sender": {
+      "name": "DocThrive",
+      "address": "docthrive@maurice-schmid.com"
+    },
+    "templates": {
+      "register": {
+        "subject": "Confirmation of Registration",
+        "template": "users/register",
+        "context": {
+          "url": "http://www.docthrive-web-app.herokuapp.com"
+        }
+      }
+    }
+  },
   "db": {
     "main": "docthrive",
     "userPrefix": "user_"

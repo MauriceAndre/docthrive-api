@@ -1,7 +1,11 @@
 // external modules
 const request = require("supertest");
+const moment = require("moment");
+const config = require("config");
 // tools
 const helper = require("../../../tools/testing-helper");
+const runtime = require("../../../tools/runtimeUtils");
+const imapClient = require("../../../tools/imapClient");
 
 module.exports = (props) => {
   describe("POST /", () => {
@@ -110,5 +114,48 @@ module.exports = (props) => {
       const match = await userDb.comparePassword(user.password);
       expect(match).toBeTruthy();
     });
+
+    it("should send a confirmation email", async () => {
+      user.email = "test@maurice-schmid.com";
+      const res = await exec();
+
+      await runtime.sleep(10000); // wait to recieve email within 10s
+
+      let connection, mails;
+      try {
+        connection = await imapClient.connect();
+        await connection.openBox("INBOX");
+
+        // search
+        const searchCriteria = ["UNSEEN"];
+        const fetchOptions = {
+          bodies: ["HEADER"],
+          markSeen: false,
+        };
+        const results = await connection.search(searchCriteria, fetchOptions);
+
+        mails = results.filter((res) => {
+          // filter latest emails
+          const duration = moment().diff(res.attributes.date, "seconds");
+          return duration < 60; // 60s = 1 minute
+        });
+      } catch (error) {
+        throw error;
+      } finally {
+        if (connection) {
+          await imapClient.deleteAllMessages(connection);
+          connection.end();
+        }
+      }
+
+      expect(mails.length).toBeGreaterThan(0);
+      expect(mails[0].parts[0].body.subject[0]).toBe(
+        // compare subjects
+        config.get("mail.templates.register.subject")
+      );
+    });
+
+    // should send a confirmation email
+    // should activate account if confirmation URL was clicked
   });
 };
