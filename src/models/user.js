@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema({
   email: { type: String, unique: true, ...email },
   password: { type: String, ...password },
   isAdmin: { type: Boolean, default: true },
-  active: { type: Boolean, default: true },
+  active: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date },
 });
@@ -56,6 +56,14 @@ userSchema.statics.verifyWebToken = function (token) {
   return jwt.verify(token, process.env.JWT_PRIVATE_KEY);
 };
 
+userSchema.methods.getConfirmationURL = function (url) {
+  return generateConfirmationURL(url, this._id);
+};
+
+const generateConfirmationURL = function (url, id) {
+  return `${url}/${id}`;
+};
+
 const User = main.model("User", userSchema);
 
 const reqKeys = ["firstName", "lastName", "email", "password"];
@@ -84,4 +92,5 @@ module.exports = {
   reqKeys,
   authKeys,
   cropResponse,
+  generateConfirmationURL,
 };
