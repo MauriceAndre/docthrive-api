@@ -22,6 +22,8 @@ const post = {
         case Array:
           test = this.test.array;
           break;
+        case Boolean:
+          return;
         case "email":
           test = this.test.email;
           break;

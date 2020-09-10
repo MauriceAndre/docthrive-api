@@ -8,6 +8,7 @@ const error = require("../middleware/error");
 const elements = require("../routes/elements");
 const elementActivities = require("../routes/elementActivities");
 const users = require("../routes/users");
+const labels = require("../routes/labels");
 const auth = require("../routes/auth");
 
 module.exports = function (app) {
@@ -20,6 +21,7 @@ module.exports = function (app) {
   app.use("/api/elements", elements);
   app.use("/api/element-activities", elementActivities);
   app.use("/api/users", users);
+  app.use("/api/labels", labels);
   app.use("/api/auth", auth);
 
   // catch error
